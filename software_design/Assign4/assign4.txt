@@ -1,0 +1,114 @@
+Assign4: Due 11:59PM December 10th
+
+A company is in the business of buying rods in wholesale, cutting it, and
+selling the pieces in the retain market. The market fluctuates and the price 
+for different sizes of rods changes by the day. Here's where we come in, the
+company wants our help to know how much maximum money they can make, and how 
+to cut the rods of a given length to get that maximum money.
+
+For example, if the rods of various lengths sell at the following prices on
+a given day:
+
+Inch   price
+1       $1
+2       $1
+3       $2
+4       $3
+5       $4
+6       $5
+7       $5
+8       $9
+9       $9
+10      $10
+
+Cutting a 20inches rod into give pieces of 2 inches each will only get them 
+$10. However, if they cut it into 6 pieces of two 8-inches, and four 1-inches
+will get them $22. There may be other combinations that produce better price.
+The additional challenge is the prices fluctuate each day.
+
+We're asked to write a program, but in a way the algorithm for computing
+the sizes can be changed.
+
+Write a class RodCutter that will take the various lengths and their prices.
+Then write one method on the class, cutRod that takes a length as parameter
+and returns two things - maximum price they company can expect and the
+size of the rods that they should cut the given length to get that price.
+For example, if the input parameter is 2 (and the prices are as above),
+then the output will be $2 and the sizes will be 1, 1 (for 2 pieces).
+
+First write the class RodCutter so it works with a simple algorithm.
+Then (and only after fully completing the above, not before), create another
+version of RodCutter that will use techniques to shorten the
+time to compute the result. The two versions must produce the same result,
+just their computations efficiencies must be different.
+
+After you complete the program, answer the following questions:
+
+1. What design principles did you use in this program. Explain each
+and specify the classes that participated.
+
+SRP:  Every class and every method that we made was created to serve 
+a single purpose. The 'RodCutter' class simply has a constructor that 
+sets up the price list, and the 'cutRod()' method which takes 
+'length' as an input and returns the maximum price and the cut 
+lengths. The 'EfficientRodCutter' class also works similarly. Every 
+test checks the results for different values. Following SRP helped 
+ensure that our code was concise.
+
+OCP: 'TestRodCutter' class follows OCP. By using the factory method
+ - 'getRodCutter()', 'TestEfficientRodCutter' class instantiates an 
+object for the 'EfficientRodCutter' class in the very same class and 
+uses that object to access the 'cutRod()' method without having to 
+touch the 'cutRod()' method. 'EfficientRodCutter' class also follows 
+OCP by using the 'cutRod()' method from the 'RodCutter' class without 
+having it to change it. Instead it uses Polymorphism to implement its 
+own version of 'cutRod()' method.
+
+LSP: 'RodCutter' class and 'EfficientRodCutter' class follows LSP 
+because an object created for the latter can be used without 
+reservation on the 'RodCutter' class on the 'cutRod()' method. 
+
+YAGNI: We wrote classes and methods only after writing the necessary 
+tests. Our code is 100% covered which shows that there is no 
+unnecessary piece of code. All classes follow YAGNI.
+
+DRY: No part of our code is repeated in any form. All classes and 
+methods are DRY in our code. 'EfficientRodCutter' class follows DRY by 
+using the 'cutRod()' method from the 'RodCutter' class by using the 
+super() method to access the 'cutRod()' from the base class - the 
+'RodCutter' class. 'TestEfficientRodCutter' class follows DRY by using 
+the same tests from 'TestRodCutter' class by overriding the 
+'getRodCutter()' method in the 'TestRodCutter' class. It sends an 
+object of the 'EfficientRodCutter' class instead of an object for the 
+'RodCutter' class.
+
+2. What design patterns did you use in this program. Explain each
+and specify the classes that participated.
+
+REPLACE THIS WITH YOUR ANSWER.
+
+We use Factory method patterns in the two test classes - 'TestRodCutter' 
+class and 'TestEfficientRodCutter' class. 'getRodCutter()' method is 
+the factory method that returns a corresponding object required by the 
+test classes. This prevents 'TestRodCutter' to check and instantiate 
+objects for each and every class that inherits it and thus adheres to 
+OCP. Also it helps to keep 'TestEfficientRodCutter' DRY.
+We also used Execute around pattern in 'TestTimeConsumed' class to 
+measure the time taken for 'TestRodCutter' class and 
+'TestEfficientRodCutter' class to execute the test cases. We used a 
+'measureTime' Closure to calculate the time taken for the method call, 
+which in turn is passed as a closure. Because of the inner closure, we 
+are able to pass not just an object but also a method call from an 
+object into the closure. i.e., a portion of code is effortlessly 
+executed around the test class for measurement. 
+
+
+Total [100]: 100
+
+Tests pass [20]:
+Good code coverage [10]:
+Design quality [20]:
+Code quality [20]:
+Efficient version's efficient [10]:
+Principles used [10]:
+Patterns used [10]:

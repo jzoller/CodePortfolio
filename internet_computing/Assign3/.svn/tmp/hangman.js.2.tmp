@@ -1,0 +1,103 @@
+<<<<<<< .mine
+var hangmanGame = this;
+exports.matchLetterInWord = function(word, letter){
+=======
+var http = require('http');
+var $ = require('jquery');
+
+var hangmanGame = this;
+
+exports.matchLetterInWord = function(word, letter, guessedLetters){
+>>>>>>> .r956
+	var indexesOfOccurrences = [];
+	hangmanGame.addLetterToGuessedLetters(letter, guessedLetters);
+
+	for(var i = 0; i < word.length; i++){
+    	if (word[i].toUpperCase() === letter.toUpperCase()){
+    		indexesOfOccurrences.push(i);
+    	}
+	}
+	return indexesOfOccurrences;
+<<<<<<< .mine
+}
+
+
+exports.updateGameStatusWithNewLetter = function(word, letter, resultsFromPreviousLetters){
+	resultsFromPreviousLetters[letter] = hangmanGame.matchLetterInWord(word, letter);
+	return resultsFromPreviousLetters[letter] !== [];
+}
+
+
+=======
+}
+
+exports.addLetterToGuessedLetters = function(letter, guessedLetters){
+	if($.inArray(letter.toUpperCase(), guessedLetters) === -1){
+		guessedLetters.push(letter.toUpperCase());
+	}
+}
+
+exports.startGame = function(){
+	var guessedLetters = [];
+	return guessedLetters;
+}
+
+exports.isGameOver = function(guessedLetters){
+	if(guessedLetters.length === 9){
+		return true;
+	}
+	return false;
+}
+
+exports.isGameWon = function(word, guessedLetters){
+	for(var i = 0; i < guessedLetters.length; i++){
+		if($.inArray(guessedLetters[i], word.toUpperCase()) === -1){
+			return false;
+		}
+	}
+	return true;
+}
+
+exports.splitWordListIntoWords = function(listOfWords){
+	var splitWords = [];
+	var notAnEmptyWord = function(word){
+		if(word !== ''){
+			return true;
+		}
+		return false;
+	}
+
+	splitWords = listOfWords.split(/\n|\r/g).filter(notAnEmptyWord);
+	return splitWords;
+}
+
+exports.generateHttpOptionsForHttpRequest = function(){
+	var httpOptions = {
+	  	host: 'dictionary-thesaurus.com',
+	  	port: 80,
+	  	path: '/wordlists/Nouns%285,449%29.txt'
+	};
+	return httpOptions;
+}
+
+exports.getHttpResponse = function (httpOptions, callback){
+	var httpResponse = '';
+	var httpGetFunction = function (response){
+		response.on('data', handleResponseOnDataRecieved);
+		response.on("error", handleResponseOnError);
+		response.on("end", handleEndOfResponse);
+	}
+
+	var handleResponseOnDataRecieved = function (responseData){
+		httpResponse += responseData;
+	}
+
+	var handleResponseOnError = function(error){
+		callback(error);
+	}
+
+	var handleEndOfResponse = function(){
+		callback(null, hangmanGame.splitWordListIntoWords(httpResponse));
+	}
+	http.get(httpOptions, httpGetFunction);
+}>>>>>>> .r956

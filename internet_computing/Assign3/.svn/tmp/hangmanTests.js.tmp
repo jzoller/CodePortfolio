@@ -1,0 +1,169 @@
+var hangmanGame = require('./hangman.js');
+
+exports.canary = function(test){
+	test.equal(true, true);
+	test.done();
+}
+
+exports.testStartGame = function(test){
+	test.deepEqual([], hangmanGame.startGame());
+	test.done();
+}
+
+exports.testMatchOneLetterInAWord = function(test){
+<<<<<<< .mine
+	test.deepEqual([1], hangmanGame.matchLetterInWord('word', 'o'));
+=======
+	var guessedLetters = hangmanGame.startGame();
+	test.equal(1, hangmanGame.matchLetterInWord('word', 'o', guessedLetters));
+	test.deepEqual(['O'], guessedLetters);
+>>>>>>> .r956
+	test.done();
+}
+
+exports.testMatchTwoLettersInAWord = function(test){
+	var guessedLetters = hangmanGame.startGame();
+	test.deepEqual([1, 2], hangmanGame.matchLetterInWord('beer', 'e', guessedLetters));
+	test.deepEqual(['E'], guessedLetters);
+	test.done();
+}
+
+exports.testMatchFourLettersInAWord = function(test){
+	var guessedLetters = hangmanGame.startGame();
+	test.deepEqual([1, 3, 5, 8], hangmanGame.matchLetterInWord('balalaikas', 'a', guessedLetters));
+	test.deepEqual(['A'], guessedLetters);
+	test.done();
+}
+
+exports.testMatchNoLettersInAWord = function(test){
+	var guessedLetters = hangmanGame.startGame();
+	test.deepEqual([], hangmanGame.matchLetterInWord('tough', 'l', guessedLetters));
+	test.deepEqual(['L'], guessedLetters);
+	test.done();
+}
+
+exports.testMatchCapitalLettersInALowerCaseWord = function(test){
+	var guessedLetters = hangmanGame.startGame();
+	test.deepEqual([0, 6], hangmanGame.matchLetterInWord('intentions', 'I', guessedLetters));
+	test.deepEqual(['I'], guessedLetters);
+	test.done();
+}
+
+exports.testMatchLowerCaseLettersToWordWithUpperCase = function(test){
+	var guessedLetters = hangmanGame.startGame();
+	test.deepEqual([0, 8], hangmanGame.matchLetterInWord('Interesting', 'i', guessedLetters));
+	test.deepEqual(['I'], guessedLetters);
+	test.done();
+<<<<<<< .mine
+}
+
+exports.updateGameStatusWithNewLetterSingleCorrect = function(test){
+	var resultsFromPreviousLetters = {};
+	var result = hangmanGame.updateGameStatusWithNewLetter('apple', 'a', resultsFromPreviousLetters);
+	test.ok(result);
+	test.deepEqual({"a":[0]}, resultsFromPreviousLetters);
+	test.done();
+}
+
+exports.updateGameStatusWithOnwWrongLetter = function(test){
+	var resultsFromPreviousLetters = {};
+	var result = hangmanGame.updateGameStatusWithNewLetter('apple', 'z', resultsFromPreviousLetters);
+	test.deepEqual({"z":[]}, resultsFromPreviousLetters);
+	test.done();
+=======
+}
+
+exports.testIsGameOverAndNotWonAfter9GuessesOfDifferentLetters = function(test){
+	var guessedLetters = hangmanGame.startGame();
+	word = 'Interesting';
+	hangmanGame.matchLetterInWord(word, 'a', guessedLetters);
+	hangmanGame.matchLetterInWord(word, 'e', guessedLetters);
+	hangmanGame.matchLetterInWord(word, 'i', guessedLetters);
+	hangmanGame.matchLetterInWord(word, 'o', guessedLetters);
+	hangmanGame.matchLetterInWord(word, 'u', guessedLetters);
+	hangmanGame.matchLetterInWord(word, 's', guessedLetters);
+	hangmanGame.matchLetterInWord(word, 'd', guessedLetters);
+	hangmanGame.matchLetterInWord(word, 'f', guessedLetters);
+	hangmanGame.matchLetterInWord(word, 'c', guessedLetters);
+	test.equal(true, hangmanGame.isGameOver(guessedLetters));
+	test.equal(false, hangmanGame.isGameWon(word, guessedLetters));
+	test.done();
+}
+
+exports.testGameIsNotOverAndNotWonAfter9GuessesOfSameLetters = function(test){
+	var guessedLetters = hangmanGame.startGame();
+	var word = 'Interesting';
+	hangmanGame.matchLetterInWord(word, 'a', guessedLetters);
+	hangmanGame.matchLetterInWord(word, 'e', guessedLetters);
+	hangmanGame.matchLetterInWord(word, 'i', guessedLetters);
+	hangmanGame.matchLetterInWord(word, 'o', guessedLetters);
+	hangmanGame.matchLetterInWord(word, 'o', guessedLetters);
+	hangmanGame.matchLetterInWord(word, 's', guessedLetters);
+	hangmanGame.matchLetterInWord(word, 'd', guessedLetters);
+	hangmanGame.matchLetterInWord(word, 'f', guessedLetters);
+	hangmanGame.matchLetterInWord(word, 'c', guessedLetters);
+	test.equal(false, hangmanGame.isGameOver(guessedLetters));
+	test.equal(false, hangmanGame.isGameWon(word, guessedLetters));
+	test.done();
+}
+
+exports.testGameIsNotOverAndWon = function(test){
+	var guessedLetters = hangmanGame.startGame();
+	var word = 'Cool';
+	hangmanGame.matchLetterInWord(word, 'c', guessedLetters);
+	hangmanGame.matchLetterInWord(word, 'o', guessedLetters);
+	hangmanGame.matchLetterInWord(word, 'l', guessedLetters);
+	test.equal(false, hangmanGame.isGameOver(guessedLetters));
+	test.equal(true, hangmanGame.isGameWon('Cool', guessedLetters));
+	test.done();
+}
+
+exports.testSplitWordOfOneWordListIntoWords = function(test){
+	test.deepEqual(['word'], hangmanGame.splitWordListIntoWords('word'));
+	test.done();
+}
+
+exports.testSplitWordListIntoWords = function(test){
+	test.deepEqual(['word', 'interesting', 'tough'], hangmanGame.splitWordListIntoWords('word\ninteresting\ntough'));
+	test.done();
+}
+
+exports.testSplitWordListIntoWordsWithAnEmptyLine = function(test){
+	test.deepEqual(['word', 'tough', 'item'], hangmanGame.splitWordListIntoWords('word\n\ntough\nitem'));
+	test.done();
+}
+
+exports.testSplitWordListIntoWordsBeginningWithAnEmptyLine = function(test){
+	test.deepEqual(['word', 'tough', 'time'], hangmanGame.splitWordListIntoWords('\nword\ntough\ntime'));
+	test.done();
+}
+
+exports.testSplitWordListIntoWordsEndingWithAnEmptyLine = function(test){
+	test.deepEqual(['this', 'weird', 'timer'], hangmanGame.splitWordListIntoWords('this\nweird\ntimer\n'));
+	test.done();
+}
+
+exports.testSplitWordListIntoWordsUsingUnixNewLine = function(test){
+	test.deepEqual(['how', 'fun', 'is', 'javascript'], hangmanGame.splitWordListIntoWords('how\rfun\ris\rjavascript'));
+	test.done();
+}
+
+exports.testGenerateHttpOptionsForHttpRequest = function(test){
+	test.deepEqual({
+		host: 'dictionary-thesaurus.com',
+	  	port: 80,
+	  	path: '/wordlists/Nouns%285,449%29.txt'}, 
+	  	hangmanGame.generateHttpOptionsForHttpRequest());
+	test.done();
+}
+
+exports.testGetWordsFromWebResponse = function(test){
+	var httpOptions = hangmanGame.generateHttpOptionsForHttpRequest();
+	var httpResponseHandlerFunction = function(error, content){
+		test.equal('abbreviation', content[0]);
+		test.equal('wound', content[content.length-1]);
+		test.done();
+	}
+	hangmanGame.getHttpResponse(httpOptions, httpResponseHandlerFunction);
+>>>>>>> .r956
+}

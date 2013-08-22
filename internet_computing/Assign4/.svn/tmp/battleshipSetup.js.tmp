@@ -1,0 +1,76 @@
+var battleShip = require('./BattleShip.js');
+clientStates = {};
+connectedClients = {};
+
+exports.addClientToSystem = function(socket, id, data){
+    console.log('Username Received From: ' + socket.remotePort + ' As: ' + data);
+    var connectedPlayers = 'Please Type \"wait\" Or Pick A Player From Below:\n';
+    for(client in clientStates){
+        connectedPlayers += clientStates[client].username + '\n';
+    }
+    clientStates[id] = {'username':data.toString(), 'responseQuery':connectedPlayers};
+    connectedClients[id] = {'socket':socket}
+    socket.write(JSON.stringify(clientStates[id]));
+}
+
+exports.setWaitingPlayer = function(socket, id, data){
+	clientStates[id].waiting = true;
+	socket.write(JSON.stringify(clientStates[id]));
+}
+
+exports.connectPlayers = function(socket, id, data){
+    console.log(clientStates[id].username + ' wants to play ' + data);
+    var opponent = findUserByUsername(data.toString());
+    console.log('User has been chosen as ' + clientStates[opponent].username);
+    clientStates[opponent].responseQuery = 'You have been chosen to play ' + clientStates[opponent].username + '\nPlease place your peices in the 8x8 grid\nThe input form is [x,y][x,y][x,y][x,y][x,y]';
+    clientStates[opponent].opponent = clientStates[id].username;
+    clientStates[id].opponent = clientStates[opponent].username;
+    clientStates[opponent].waiting = false;
+    connectedClients[opponent].socket.write(JSON.stringify(clientStates[opponent]));
+    clientStates[id].responseQuery = 'Please place your pieces in the 8x8 grid\nThe input form is [x,y][x,y][x,y][x,y][x,y]';
+    socket.write(JSON.stringify(clientStates[id]));
+}
+
+var findUserByUsername = function(username){
+		for(user in clientStates){
+			if(username === clientStates[user].username){
+				return user;
+			}
+		}
+		return -1;
+	}
+
+exports.setPlayerNumbers = function(socket, id, data){
+	var opponent = findUserByUsername(clientStates[id].opponent);
+	if(clientStates[opponent].playerNumber === undefined){
+		console.log(clientStates[id].username + ' has been added to a game as P1');
+		clientStates[id].playerNumber = 0;
+		clientStates[id].isTurn = true;
+	}
+	else{
+		console.log(clientStates[id].username + ' has been added to a game as P2');
+		clientStates[id].playerNumber = 1;
+	}
+	clientStates[id].responseQuery = 'Please make a shot in the 8x8 grid\nThe input form is [x,y]';
+	var waitForPlayer2ToSetBoard = function(){
+		if(clientStates[opponent].playerNumber === 1){
+			socket.write(JSON.stringify(clientStates[id]));
+			clientStates[opponent].responseQuery = 'It is not your turn please wait for your turn :)'
+			connectedClients[opponent].socket.write(JSON.stringify(clientStates[opponent]));
+		}
+		else{
+			setTimeout(waitForPlayer2ToSetBoard, 1000);
+		}
+	}
+	waitForPlayer2ToSetBoard();
+}
+
+exports.swapTurns = function(socket, id, data){
+	clientStates[id].isTurn = false;
+	var opponent = findUserByUsername(clientStates[id].opponent);
+	clientStates[opponent].isTurn = true;
+	clientStates[id].responseQuery = "You hit or missed";
+	socket.write(JSON.stringify(clientStates[id]));
+	clientStates[opponent].responseQuery = "Please make a shot in the 8x8 grid\nThe input form is [x,y]";
+	connectedClients[opponent].socket.write(JSON.stringify(clientStates[opponent]));
+}

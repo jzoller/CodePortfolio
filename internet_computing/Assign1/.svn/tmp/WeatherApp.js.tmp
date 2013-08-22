@@ -1,0 +1,75 @@
+var http = require('http');
+
+var generatePathForHttpRequest = function(WOEID){
+//exports.generatePathForHttpRequest = function(WOEID){
+	return '/forecastrss?w=' + WOEID + '&u=f';
+}
+
+var generateHttpOptionsForHttpRequest = function(path){
+//exports.generateHttpOptionsForHttpRequest = function(path){
+	var httpOptions = {
+	  	host: 'weather.yahooapis.com',
+	  	port: 80,
+	  	path: path
+	};
+	return httpOptions;
+}
+
+var getStringHttpRequest = function (httpOptions, htmlContent, callback){
+//exports.getStringHttpRequest = function (httpOptions, htmlContent, callback){
+	var body = "";
+	var callback = function(error, content){
+		console.log("pushing to htmlContent");
+		htmlContent.push(content);
+<<<<<<< .mine
+		console.log("****** htmlContent in callback = " + htmlContent);
+=======
+
+>>>>>>> .r206
+	}
+	http.get(httpOptions, function (response){
+		response.on('data', function (responseData){
+			body = responseData.toString();
+		});
+		response.on("error", function(error){
+			callback(error);
+		});
+		response.on("end", function(){
+			callback(null, body)
+		});
+	})
+<<<<<<< .mine
+	console.log("at end of function htmlContent = " + htmlContent);
+}
+
+var path = generatePathForHttpRequest(0);
+var httpOptions = generateHttpOptionsForHttpRequest(path);
+var htmlContent = [];
+getStringHttpRequest(httpOptions, htmlContent);
+console.log("outside of of function htmlContent = " + htmlContent);=======
+}
+
+exports.getCurrentCityAndStateFromResponseData = function(stringOfHttpResponse) {
+	var startOfTitleTag = stringOfHttpResponse.match('<title>Yahoo! Weather - ');
+	var endOfTitleTag = stringOfHttpResponse.match('</title>');
+	var titleTag = stringOfHttpResponse.substring(startOfTitleTag.index + 24, endOfTitleTag.index);
+	return titleTag;
+}
+
+exports.parseStateFromCityAndStateString = function(cityAndState){
+	var state = cityAndState.substring(cityAndState.match(',').index +2, cityAndState.match(',').index + 4);
+	return state;
+}
+
+exports.parseCityFromCityAndStateString = function(cityAndState){
+	var city = cityAndState.substring(0, cityAndState.match(',').index);
+	return city;
+}
+
+exports.getCurrentTemperatureFromResponseData = function(stringOfHttpResponse){
+	var startOfTemperatureString = stringOfHttpResponse.match('Current Conditions:</b><br />');
+	var endOfTemperatureString = stringOfHttpResponse.match('<BR /><b>Forecast:</b><BR />');
+	var temperatureString = stringOfHttpResponse.substring(startOfTemperatureString.index, endOfTemperatureString.index);
+	var findDigits = /\d+/;
+	return temperatureString.match(findDigits).toString();
+}>>>>>>> .r206

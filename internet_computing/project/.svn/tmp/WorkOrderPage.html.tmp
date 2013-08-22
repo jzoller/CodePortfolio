@@ -1,0 +1,49 @@
+<!doctype html>
+<link rel="stylesheet" href="style.css" type="text/css" />
+<html  manifest="ProjectManifest.appcache">
+	<head>
+		<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+		<meta content="utf-8" http-equiv="encoding">
+		<meta charset="utf-8"/>
+		<title>
+			Work Order Form
+		</title>
+	</head>
+	<body>
+		<section id="titleArea"><h1><center>Work Order Form</center></h1></section>
+		<section id="inputArea">
+			<form id="createWorkOrder" method="post">
+		      	<fieldset id="createWorkOrder">
+				<label>First Name</label>
+				<input type="input" id="firstName" placeholder="First" autofocus required></input>
+				<label>Last Name</label>
+				<input type="input" id="lastName" placeholder="Last" required></input>
+				<label>Description of Work</label>
+				<textarea name="description" id="description" cols="23" rows="8" placeholder="Enter your description..." required></textarea>
+				<label>Location of Work</label>
+				<img id="locationMap" src="http://maps.google.com/maps/api/staticmap?center=42.877742, -97.380979&zoom=3&size=300x300&sensor=false" style="width: 200px; height: 200px;" />
+				<input id="location"></input>				
+				<label>Date of Creation</label>
+				<input type="input" id="creationDate" disabled></input>
+				<label>Severity</label>
+				<select id="severity" required>
+					<option selected disabled>Please Select One...</option>
+					<option value="minor">Minor</option>
+					<option value="major">Major</option>
+					<option value="urgent">Urgent</option>
+				</select> 
+				<br></br>
+				<input type="submit" value="Create Work Order" onclick=handleSubmission();></input>
+				</fieldset>
+		    </form>
+		</section>
+	</body>
+	<script src="ProjectScripts.js"></script>
+	<script src="jquery-1.10.2.min.js"></script>
+	<script src="jquery-ui-1.10.3.custom.min.js"></script>
+	<script>
+		getGeoLocation(document.getElementById('location'));
+		setToToday();
+		
+	</script>
+</html>

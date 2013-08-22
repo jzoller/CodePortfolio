@@ -1,0 +1,7 @@
+canvas#hangmanCanvas{
+	background-color: #C6E2FF;
+	width: 91%;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}

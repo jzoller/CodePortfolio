@@ -1,0 +1,97 @@
+var getGeoLocation = function(elementToUpdate){
+	var locationInfo = function(position){
+		var latitude = position.coords.latitude;
+    	var longitude = position.coords.longitude;
+    	elementToUpdate.innerHTML = latitude + ", " + longitude;
+    	document.getElementById('locationMap').src = "http://maps.google.com/maps/api/staticmap?center="+ latitude +","+longitude+"&zoom=15&size=300x300&markers=color:blue%7Clabel:A%7C"+latitude+","+longitude+"&sensor=false";
+	}
+
+	var locationInfoError = function(error){        
+	    var errorMessage = ['',
+	     'Permission denied',
+	     'Position unavailable',
+	     'Timeout'];
+	     
+	    alert("error receiving location info: " + errorMessage[error.code]);
+  	}
+
+	navigator.geolocation.getCurrentPosition(locationInfo, locationInfoError);
+
+}
+
+var registerDragDrop = function(dragSource) {
+	    dragSource.ondragstart = function(event) {
+	      var dataToCopy = this.getAttribute('vehicleType');
+	      event.dataTransfer.setData('Text', dataToCopy);
+	      return true;
+	    };
+
+	    dropTarget.ondragover = function(event) {
+	      event.preventDefault();
+	      return false;
+	    };
+
+	    dropTarget.ondragend = function(event) {
+	      event.preventDefault();
+	      return false;
+	    };
+	}
+
+var registerDraggableElements = function() {
+	var carsToSetDraggable = ['toyotaPrius', 'toyotaCamry', 'fordEscape', 'lincolnTownCar', 'crownVictoria'];
+	  for(var car in carsToSetDraggable){
+	  	document.getElementById(carsToSetDraggable[car]).addEventListener('dragstart', startDrag, false);
+	  }
+
+	  document.getElementById('carDragArea').addEventListener('drop', dropOnSelect, false);
+}
+
+var startDrag = function(e){
+	e.dataTransfer.setData('text', this.getAttribute('vehicleType'));
+	document.getElementById(carDragArea).size = e.dataTransfer.setData('text', this.getAttribute('vehicleType')).length;
+
+}
+
+var dropOnSelect = function(e){
+	var carToAdd = e.dataTransfer.getData('text');
+
+	if(itemIsInList(carToAdd)){
+		alert('You have already selected ' + carToAdd + ' as a desired vehicle');
+	}
+	else{
+		addCarToDesiredCarList(carToAdd);
+	}
+}
+
+var itemIsInList = function(carToAdd){
+	var currentListOfCars = document.getElementById('desiredCarList').options;
+	for(item in currentListOfCars){
+		if(currentListOfCars[item].text === carToAdd.toString()){
+			resetCarDragArea();
+			return true;
+		}
+	}
+	return false;
+}
+
+var addCarToDesiredCarList = function(carToAdd){
+	var selectTag = document.getElementById('desiredCarList');
+	option = document.createElement("option");
+	option.value = carToAdd;
+	option.textContent = carToAdd;
+	selectTag.appendChild(option);
+	selectTag.size = selectTag.options.length + 1;
+	resetCarDragArea();
+}
+
+var resetCarDragArea = function(){
+//	document.getElementById('carDragArea').value = '';
+	document.getElementById('carDragArea').value = 'Drag Desired Car(s) Here';
+}
+
+var checkLocationUponSubmission = function(elementToUpdate){
+	if (elementToUpdate.value === undefined){
+		alert('Please click button to get pickup location');
+	}
+
+}

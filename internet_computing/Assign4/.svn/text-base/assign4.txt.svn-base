@@ -1,0 +1,24 @@
+Assign4 Due 11:59PM August 8th (note not a Friday)
+
+Create the game of battleship (a modified version) using Node.js. 
+
+It is perfectly fine to create a command-line program, no GUI is required.
+
+Features:
+1. User connects to the server, provides a name.
+2. User can view a list of players available.
+3. Can initiate a game with a waiting player
+4. Once the game starts, each user is expected to send locations of their five ships
+	(we will assume each ship takes only one location on a 8x8 grid).
+5. Each user takes turn to hit a target. The server keeps track of where the users hit.
+6. The first player to sink all of the opponent's ship is declared a winner.
+7. Once the game is over (won or lost), the user will have to reconnect and provide their name again.
+
+Total [100]: 100
+Server starts up and waits for connection [10]:
+Multiple users can connect [10]:
+Player can view list of other players [10]:
+Player can initiate a game [10]:
+Player can set locations of ships [10]:
+Player can play and complete the game [20]:
+Code quality [30]:

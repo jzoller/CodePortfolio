@@ -1,0 +1,17 @@
+Assign3 Due 11:59PM August 2nd
+
+Create a HTML 5 canvas game of hangman (http://en.wikipedia.org/wiki/Hangman_(game)).
+
+The game will first read a random word from 
+
+http://dictionary-thesaurus.com/wordlists/Nouns%285,449%29.txt
+
+It will then give feedback to the user, for correct and
+wrong responses, in the spirit of the game, until the game is
+either won or lost.
+
+Total [100]: 100
+Program works [25]:
+Handles connectivity issues gracefully [25]:
+Code quality [25]:
+Interface quality [25]:

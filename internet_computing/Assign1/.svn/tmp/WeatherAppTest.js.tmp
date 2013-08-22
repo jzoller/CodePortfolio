@@ -1,0 +1,18 @@
+var weatherApp = require('./WeatherApp.js')
+var fileStream = require('fs');
+var generateFile = function(){
+	var weatherCodes  ='2424766\n2425766\n2442047\n2502265\n2499999';
+	fileStream.writeFile('TestData.txt', weatherCodes, function(error){
+		if(error){
+			console.log(error);
+		} else{
+			console.log("File was saved");
+		}
+	});
+}
+
+exports.testReadFile = function(test){
+	generateFile();
+	test.equal('2424766\n2425766\n2442047\n2502265\n2499999\n', weatherApp.readFile('TestData.txt'));
+	test.done();
+}

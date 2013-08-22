@@ -1,0 +1,19 @@
+CACHE MANIFEST
+#VERSION 62
+
+CACHE:
+WorkOrderPage.html
+ProjectScripts.js
+dataHandler.js
+errorChecks.js
+geolocation.js
+jquery.mask.min.js
+jquery-1.10.2.min.js
+jquery-ui-1.10.3.custom.min.js
+style.css
+img/staticmap.png
+
+FALLBACK:
+
+NETWORK:
+*

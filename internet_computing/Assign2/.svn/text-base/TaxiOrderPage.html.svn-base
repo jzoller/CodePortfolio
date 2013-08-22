@@ -1,0 +1,116 @@
+<!doctype html>
+<link rel="stylesheet" href="style.css" type="text/css" />
+<html>
+	<head>
+		<title>
+			Taxi Order Form
+		</title>
+	</head>
+	<body>
+		<section id="logoArea"><center><img id="logo" src="img/logo.png" /></center></section>
+		<section id="linkArea">
+			<article>
+			<a href="">Taxi service</a>
+			</article>
+			<article>
+			<a href="">Contact</a>
+			</article>
+			<article>
+			<a href="">About</a>
+			</article>
+		</section>
+		<section id="inputArea">
+			<form id="createTaxiOrder" method="post">
+		      	<fieldset id="orderATaxiField">
+			      	<aside id="formArea1" class="formArea">
+						<label>First Name</label>
+						<input type="input" id="firstName" name="First Name" placeholder="First" autofocus required></input>
+						<label id="firstNameError" class="errorMessage"></label>
+						<label>Last Name</label>
+						<input type="input" id="lastName" placeholder="Last" required></input>
+						<label id="lastNameError" class="errorMessage"></label>
+						<label>Phone Number</label>
+						<input type="tel" id="phoneNumber" placeholder="832-102-2421" maxlength="13" required></input>
+						<label id="phoneNumberError" class="errorMessage"></label>
+						<label>Email</label>
+						<input type="email" id="email" placeholder="youremail@example.com" required></input>
+						<label id="emailError" class="errorMessage"></label>
+						<label>Destination Address</label>
+						<input type="input" class="addressInput" id="destinationStreet" placeholder="123 Street Address" required></input>
+						<label id="destinationStreetError" class="errorMessage"></label>
+						<input type="input" class="addressInput" id="destinationCityState" placeholder="City, State" required></input>
+						<label id="destinationCityAndStateError" class="errorMessage"></label>
+						<input type="input" class="addressInput" id="destinationZip" placeholder="77384" maxlength="5" required></input>
+						<label id="destinationZipError" class="errorMessage"></label>
+					</aside>
+					<aside id="formDragArea" class="formArea">
+						<label>Choose Car:</label>
+						<table id="typesOfCars">
+							<tr>
+								<td id="crownVictoria" class="vehicle" vehicleType="Crown Victoria" draggable="true">
+									<img src="img/CrownVic.png"/>
+									<br>
+									Crown Victoria
+								</td>
+								<td id="lincolnTownCar" class="vehicle" vehicleType="Lincoln Town Car" draggable="true">
+									<img src="img/Lincoln.png"/>
+									<br>
+									Lincoln Town Car
+								</td>
+							</tr>
+							<tr>
+								<td id="toyotaPrius" class="vehicle" vehicleType="Toyota Prius" draggable="true">
+									<img src="img/Prius.png"/>
+									<br>
+									Toyota Prius
+								</td>
+								<td id="fordEscape" class="vehicle" vehicleType="Ford Escape" draggable="true">
+									<img src="img/Escape.png"/>
+									<br>
+									Ford Escape
+								</td>
+							</tr>
+							<tr>
+								<td id="toyotaCamry" class="vehicle" vehicleType="Toyota Camry" draggable="true">
+									<img src="img/Camry.png"/>
+									<br>
+									Toyota Camry
+								</td>
+							</tr>
+						</table>
+						<article id="carDragArea" ondragover="return false;">Drag Desired Car(s) Here
+							<select size="2" id="desiredCarList">
+							</select>
+							<label id="carDragError" class="errorMessage"></label>
+						</article>
+					</aside>
+					<aside id="mapArea" class="formArea">
+			      		<center>
+				      		<img id="locationMap" src="http://maps.google.com/maps/api/staticmap?center=42.877742, -97.380979&zoom=3&size=300x300&sensor=false" alt="Map"/>
+				      		<br>
+				      		<input type="input" id="location" required disabled></input>
+				      		<br>
+				      		<button type="button" id="locateButton" onclick=getGeoLocation(document.getElementById('location'));>Get Pickup Location</button>
+				      		<label id="locationError" class="errorMessage"></label>
+				      		<label id="locationErrorDetails" class="errorMessage"></label>
+			      		</center>
+			      	</aside>
+				</fieldset>
+				<section id="submitButtonSection">
+			    	<input type="submit" id="submitButton" value="Request Taxi"></input>
+			    </section>
+		    </form>
+		</section>
+		<footer id="copyright">
+			<hr></hr>
+			<p>&copy; 2012-2013-All rights reserved.</p>	
+		</footer>
+	</body>
+	<script src="jquery-1.10.2.min.js"></script>
+	<script src="jquery-ui-1.10.3.custom.min.js"></script>
+	<script src="TaxiScripts.js"></script>
+	<script>
+		registerDraggableElements();
+		document.getElementById('submitButton').onclick = checkFormUponSubmission;
+	</script>
+</html>

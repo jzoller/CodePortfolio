@@ -1,0 +1,336 @@
+var setUp = function(){
+	var hangmanCanvas = document.getElementById('hangmanCanvas');
+	var context = hangmanCanvas.getContext('2d');
+	showLoadingText(hangmanCanvas);
+	
+	var giveFocus = function(event){
+		hangmanCanvas.focus();
+	}
+
+	hangmanCanvas.addEventListener('mouseover', giveFocus, false);
+	
+	beginGame();
+}
+
+var showLoadingText = function(gameCanvas){
+	var context = gameCanvas.getContext('2d');
+	eraseAll(gameCanvas);
+	context.fillStyle = 'black';
+	addTextToCanvas(context, 'Loading...', gameCanvas.width/2, gameCanvas.height/2, 'center');
+}
+
+var beginGame = function() {
+	var url = 'http://dictionary-thesaurus.com/wordlists/Nouns(5,449).txt';  
+	var routingURL = 'http://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from html where url="' + url + '"') + '&format=json&callback=?';
+
+	var callback = function(data) {
+		eraseAll(hangmanCanvas);
+		var words = data.query.results.body.p.split(' ');
+		var chosenWord = '';//
+		chosenWord= words[Math.floor(Math.random()*words.length)].toUpperCase();
+		console.log(chosenWord);
+		drawGameArea(hangmanCanvas, chosenWord);
+		playGame(chosenWord);
+	}
+
+	$.getJSON(routingURL, callback);
+}
+
+var playGame = function(chosenWord){
+	guessedLetters = startGame();
+	context = hangmanCanvas.getContext('2d');
+
+	var handleKeyPress = function(event){
+		var keystroke = event.which;
+		console.log('keystrong:'+keystroke+String.fromCharCode(keystroke));
+		if(65<=keystroke && 90>=keystroke){
+			var pressedLetter = String.fromCharCode(keystroke).toUpperCase();
+			crossOutLetter(context, pressedLetter.charCodeAt(0)-65);
+			if(guessLetter(chosenWord, pressedLetter, guessedLetters).toString()!==''){
+				addCorrectLetterToCanvas(keystroke, context, guessedLetters[pressedLetter]);
+				if(isGameWon(chosenWord, guessedLetters)){
+					hangmanCanvas.removeEventListener('keyup', handleKeyPress, false);
+					gameWon(context, chosenWord);
+				}
+			}
+			else{
+				drawHangman(context, numberOfWrongGuesses(guessedLetters));
+				if(numberOfWrongGuesses(guessedLetters) === 6){
+					hangmanCanvas.removeEventListener('keyup', handleKeyPress, false);
+					gameOver(context, chosenWord);
+				}
+			}
+		}
+		return false;
+	}
+	
+	hangmanCanvas.addEventListener('keyup', handleKeyPress, false);
+}
+
+var drawHangman = function(context, numberofWrongGuesses){
+	var drawLine = function(beginX, beginY, horizontalChange, verticalChange){
+		context.beginPath();
+		context.strokeStyle = '#003300';
+		context.moveTo(beginX, beginY);
+		context.lineTo(beginX + horizontalChange, beginY + verticalChange);
+		context.stroke();
+	}
+
+	var drawHead = function(){
+		context.beginPath();
+		context.arc(792, 124, 50, 0, 2 * Math.PI, false);
+		context.lineWidth = 5;
+      	context.strokeStyle = '#003300';
+      	context.stroke();
+	}
+
+	var drawBody = function(){
+		drawLine(792, 174, 0, 126);
+	}
+
+	var drawLeftArm = function(){
+		drawLine(792, 200, -42, 70);
+	}
+
+	var drawRightArm = function(){
+		drawLine(792, 200, 42, 70);
+	}
+
+	var drawLeftLeg = function(){
+		drawLine(792, 300, -42, 100);
+	}
+
+	var drawRightLeg = function(){
+		drawLine(792, 300, 42, 100);
+	}
+	//array of functions
+	if(numberofWrongGuesses === 1)
+		drawHead();
+	if(numberofWrongGuesses === 2)
+		drawBody();
+	if(numberofWrongGuesses === 3)
+		drawLeftArm();
+	if(numberofWrongGuesses === 4)
+		drawRightArm();
+	if(numberofWrongGuesses === 5)
+		drawLeftLeg();
+	if(numberofWrongGuesses === 6)
+		drawRightLeg();
+}
+
+var crossOutLetter = function(context, charCodeOfLetterToCrossOut){
+	if(charCodeOfLetterToCrossOut <= 9 && charCodeOfLetterToCrossOut >=0){
+		drawCrossThroughLetter(context, (charCodeOfLetterToCrossOut)*38, 0);
+	}
+	else if(charCodeOfLetterToCrossOut <= 19){
+		drawCrossThroughLetter(context, (charCodeOfLetterToCrossOut-10)*38, 60);
+	}
+	else if(charCodeOfLetterToCrossOut <= 25){
+		drawCrossThroughLetter(context, (charCodeOfLetterToCrossOut-20)*38, 120);
+	}
+}
+
+var drawGameArea = function(gameCanvas, word){
+	var context = gameCanvas.getContext('2d');
+	
+//quick note:  the next few lines are set up merely for display purposes; they will likely have to be refactored to reflect
+//displayWord updates; this will likely involve passing the displayWord as an argumment
+	
+	drawScaffold(context, gameCanvas.width, gameCanvas.height);
+	drawWordArea(context, word, gameCanvas.width, gameCanvas.height);
+	drawGuessableLettersArea(context);
+	drawGuessableLetters(context);
+}
+
+var drawWordArea = function(context, word, width, height){
+	context.fillStyle = '#000000';
+	for(var letter in word){
+		addTextToCanvas(context, '_', 150+(letter*38), height * 0.35);
+	}
+}
+
+var drawScaffold = function(context, width, height){
+		var scaffoldTopRight = [width * 0.9, height * 0.05];
+		var scaffoldColor = '#8B7355';
+
+		var drawVerticalScaffoldBar = function(){
+			context.beginPath();	
+			context.moveTo(scaffoldTopRight[0], scaffoldTopRight[1]);
+			context.lineTo(scaffoldTopRight[0], scaffoldTopRight[1] + height * 0.8);
+			context.strokeStyle = scaffoldColor;
+			context.lineWidth = 8;
+			context.stroke();
+		}
+
+		var drawHorizontalScaffoldBar = function(){
+			context.beginPath();
+			context.moveTo(scaffoldTopRight[0] * 1.05, scaffoldTopRight[1]);
+			context.lineTo(scaffoldTopRight[0] * 0.77, scaffoldTopRight[1]);
+			context.lineWidth = 8;
+			context.stroke();
+		}
+
+		var drawNoose = function(){
+			context.beginPath();
+			context.strokeStyle = '#FFEFD5';
+			context.lineWidth = 4;
+			context.moveTo(scaffoldTopRight[0] * 0.8, scaffoldTopRight[1]);
+			context.lineTo(scaffoldTopRight[0] * 0.8, scaffoldTopRight[1] + height * 0.1);
+			context.stroke();
+		}
+
+		var drawBaseOfScaffold = function(){
+			context.beginPath();
+			context.fillStyle = scaffoldColor;
+			context.fillRect(scaffoldTopRight[0] - 0.35 * width, scaffoldTopRight[1] + height * 0.8,
+			scaffoldTopRight[0] + 0.1 * width, scaffoldTopRight[1] + height * 0.9);
+		}
+
+		drawVerticalScaffoldBar();
+		drawHorizontalScaffoldBar();
+		drawNoose();
+		drawBaseOfScaffold();
+}
+
+var drawGuessableLettersArea = function(context){
+	context.beginPath();
+	context.fillStyle = 'white';
+	context.fillRect(50, 290, 400, 200);
+}
+
+var drawCrossThroughLetter = function(context, x, y){
+	context.beginPath();
+	context.strokeStyle = '#FF0000';
+	var leftOfLetter = 60 + x;
+	var topOfLetter = 300 + y;
+	context.moveTo(leftOfLetter, topOfLetter);
+	context.lineTo(leftOfLetter + 38, topOfLetter + 40);
+	context.stroke();
+}
+
+var drawGuessableLetters = function(context){
+	context.fillStyle = "black";
+	for(var i = 1; i<=10; i++){
+		addTextToCanvas(context, String.fromCharCode(i+64).toUpperCase(), 22+(i*38), 340)
+	}
+	for(var i = 11; i<=20; i++){
+		addTextToCanvas(context, String.fromCharCode(i+64).toUpperCase(), 22+((i-10)*38), 400)
+	}
+	for(var i = 21; i<=26; i++){
+		addTextToCanvas(context, String.fromCharCode(i+64).toUpperCase(), 22+((i-20)*38), 460)
+	}
+}
+
+var addCorrectLetterToCanvas = function(keystroke, context, positions){
+	console.log('String.fromCharCode(keystroke) = ' + String.fromCharCode(keystroke));
+	var firstPositionWidth = 150;
+	context.fillStyle = '#FF4500';
+	for(position in positions){
+		addTextToCanvas(context, String.fromCharCode(keystroke).toUpperCase(), firstPositionWidth + (positions[position]*38), 178);
+	}
+}
+
+var addTextToCanvas = function(context, text, x, y, align){
+	context.beginPath();
+	context.font = '40pt Andale Mono';
+	context.textAlign = 'left';
+	if(align !==null)
+		context.textAlign = align;
+	//context.fillStyle = '#FF4500';
+	context.fillText(text, x, y);
+}
+
+var eraseAll = function(gameCanvas){
+	var context = gameCanvas.getContext('2d');
+	context.beginPath();
+	context.fillStyle = '#1BC6E0';
+	context.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
+}
+
+var gameOver = function(context, chosenWord){
+	var enableEnterToRestart = function(event){
+		var keystroke = event.which;
+		if(keystroke === 13){
+			setUp();
+			hangmanCanvas.removeEventListener('keyup', enableEnterToRestart, false);
+		}
+	}
+	
+	hangmanCanvas.addEventListener('keyup', enableEnterToRestart, false);
+	context.beginPath();
+	context.fillStyle = 'Red';
+	context.fillRect(0, 0, 600, 500);
+	context.fillStyle = 'Black';
+	addTextToCanvas(context, 'Game Over!', 300, 150, 'center');
+	addTextToCanvas(context, 'The Word Was:', 300, 200, 'center');
+	addTextToCanvas(context, chosenWord, 300, 250, 'center');
+	addTextToCanvas(context, 'Press Enter', 300, 300, 'center');
+	addTextToCanvas(context, 'To Restart', 300, 350, 'center');
+}
+
+var gameWon = function(context, chosenWord){
+	var enableEnterToRestart = function(event){
+		var keystroke = event.which;
+		if(keystroke === 13){
+			setUp();
+			hangmanCanvas.removeEventListener('keyup', enableEnterToRestart, false);
+		}
+	}
+	
+	hangmanCanvas.addEventListener('keyup', enableEnterToRestart, false);
+	context.beginPath();
+	context.fillStyle = 'blue';
+	context.fillRect(0, 0, 600, 500);
+	context.fillStyle = 'Black';
+	addTextToCanvas(context, 'You Won!', 300, 150, 'center');
+	addTextToCanvas(context, 'Good Job Guessing:', 300, 200, 'center');
+	addTextToCanvas(context, chosenWord, 300, 250, 'center');
+	addTextToCanvas(context, 'Press Enter', 300, 300, 'center');
+	addTextToCanvas(context, 'To Restart', 300, 350, 'center');
+}
+
+var matchLetterInWord = function(word, letter){
+	var indexesOfOccurrences = [];
+	for(var i = 0; i < word.length; i++){
+    	if (word[i].toUpperCase() === letter) indexesOfOccurrences.push(i);
+	}
+	return indexesOfOccurrences;
+}
+
+var guessLetter = function(word, letter, guessedLetters){
+	guessedLetters[letter] = matchLetterInWord(word, letter);
+	return guessedLetters[letter];
+}
+
+var startGame = function(){
+	var guessedLetters = {};
+	return guessedLetters;
+}
+
+var numberOfWrongGuesses = function(guessedLetters){
+	var numberOfIncorrectGuesses = 0;
+	for(letter in guessedLetters){
+		if(guessedLetters[letter].toString() === ''){
+			numberOfIncorrectGuesses++;
+		}
+	}
+
+	return numberOfIncorrectGuesses;
+}
+
+var isGameWon = function(word, guessedLetters){
+	console.log('isGameWon called');
+	var correctlyGuessedLetters = [];
+	for(letter in guessedLetters){
+		if(guessedLetters[letter].toString() !== ''){
+			correctlyGuessedLetters.push(letter);
+		}
+	}
+
+	for(var i = 0; i < word.length-1; i++){
+		if($.inArray(correctlyGuessedLetters[i], word.toUpperCase()) === -1){
+			return false;
+		}
+	}
+	return true;
+}

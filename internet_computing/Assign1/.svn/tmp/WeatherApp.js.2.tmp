@@ -1,0 +1,63 @@
+var http = require('http');
+var weatherApp = this;
+
+exports.generatePathForHttpRequest = function(WOEID){
+	return '/forecastrss?w=' + WOEID + '&u=f';
+}
+
+exports.generateHttpOptionsForHttpRequest = function(path){
+	var httpOptions = {
+	  	host: 'weather.yahooapis.com',
+	  	port: 80,
+	  	path: path
+	};
+	return httpOptions;
+}
+
+
+exports.getStringHttpRequest = function (httpOptions, callback){
+	http.get(httpOptions, function (response){
+		var stringHttpRequest = '';
+		response.on('data', dataResponse);
+		response.on("error", errorResponse);
+		response.on("end", endResponse);
+	})
+}
+
+var dataResponse = function (responseData){
+			stringHttpRequest += responseData.toString();
+		};
+
+var errorResponse = function(error){
+			callback(error);
+		};
+
+var endResponse = function(callback){
+			weatherApp.getCurrentCityAndStateFromResponseData(stringHttpRequest);
+			callback(null, stringHttpRequest);
+		};
+
+exports.getCurrentCityAndStateFromResponseData = function(stringOfHttpResponse) {
+	var startOfTitleTag = stringOfHttpResponse.match('<title>Yahoo! Weather - ');
+	var endOfTitleTag = stringOfHttpResponse.match('</title>');
+	var titleTag = stringOfHttpResponse.substring(startOfTitleTag.index + 24, endOfTitleTag.index);
+	return titleTag;
+}
+
+exports.parseStateFromCityAndStateString = function(cityAndState){
+	var state = cityAndState.substring(cityAndState.match(',').index +2, cityAndState.match(',').index + 4);
+	return state;
+}
+
+exports.parseCityFromCityAndStateString = function(cityAndState){
+	var city = cityAndState.substring(0, cityAndState.match(',').index);
+	return city;
+}
+
+exports.getCurrentTemperatureFromResponseData = function(stringOfHttpResponse){
+	var startOfTemperatureString = stringOfHttpResponse.match('Current Conditions:</b><br />');
+	var endOfTemperatureString = stringOfHttpResponse.match('<BR /><b>Forecast:</b><BR />');
+	var temperatureString = stringOfHttpResponse.substring(startOfTemperatureString.index, endOfTemperatureString.index);
+	var findDigits = /\d+/;
+	return temperatureString.match(findDigits).toString();
+}

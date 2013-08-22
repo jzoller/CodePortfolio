@@ -1,0 +1,41 @@
+Assign2 Due 11:59PM July 26th
+
+In this assignment, don't worry about any server side, only create a single HTML page using HTML5.
+
+A taxi service wants to provide a facility to order a taxi online.
+The page should contain the following details and provide the following facilities.
+
+1. Take the first and last name (both required) of the person ordering.
+2. Take phone number and email address (both required).
+3. Pick up location (the location is obtained from the geolocation API) by clicking a button
+- fill in a text box with lat and lon information obtained from the API.
+4. Destination address (required).
+5. Type of car they'd like (give a list and allow user to drag and drop car types they'd like - user can have one or more in the list).
+6. Color code the elements in the list to use different colors for even and 
+odd rows.
+7. Provide links to the taxi service, contact, and about pages on the left side 
+of the page.
+8. Style your form to add rounded edges, color, transparency, etc.
+9. Provide a copyright notice at the bottom of the page.
+10. Group the contents logically using HTML5 semantic elements.
+
+Create one html file and one css file.
+
+Total [100]: 97
+
+Required field checks [20]
+  -first name
+  -last name
+	-phone number (format)
+	-email
+  -pick up location
+	- destination address
+
+- geo location error notification [10]
+- drag drop for car [10]
+- error handling of duplicate drops [10]
+- coloring [10]
+- nav tags for links [10]
+- styling [10]
+
+- overall work [20]

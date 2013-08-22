@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en" manifest="ProjectManifest.appcache">
+		<title>
+			Work Order Form
+		</title>
+	<body>
+		<section id="titleArea"><h1><center>Work Order Form</center></h1></section>
+		<center>
+		<section id="inputArea">
+			<fieldset id="createWorkOrderField">
+				<form id="createWorkOrder">
+		      		<article id="inputTextBoxes">
+						<label class="fieldLabel">First Name</label>
+						<input type="input" id="firstName" placeholder="First" autofocus></input>
+						<label id="firstNameError" class="errorMessage"></label>
+						<label class="fieldLabel">Last Name</label>
+						<input type="input" id="lastName" placeholder="Last"></input>
+						<label id="lastNameError" class="errorMessage"></label>
+						<label class="fieldLabel">Description of Work</label>
+						<textarea name="description" id="description" cols="23" rows="8" placeholder="Enter your description..."></textarea>
+						<label id="descriptionError" class="errorMessage"></label>
+						<label class="fieldLabel">Date of Creation</label>
+						<input type="input" id="creationDate"></input>
+						<label id="creationDateError" class="errorMessage"></label>
+						<label class="fieldLabel">Severity</label>
+						<select id="severity">
+							<option selected disabled>Please Select One...</option>
+							<option value="minor">Minor</option>
+							<option value="major">Major</option>
+							<option value="urgent">Urgent</option>
+						</select>
+						<label id="severityError" class="errorMessage"></label> 
+					</article>
+					<article id="mapArea">
+						<label class="fieldLabel">Location of Work</label>
+						<img id="locationMap" src="img/staticmap.png"/>
+						<input id="location" disabled></input>
+						<center>
+							<input type="button" id="updateGeoLocation" onclick="getGeoLocation(document.getElementById('location'));" value= "Update GeoLocation"></input>
+							<label id="locationError" class="errorMessage"></label>
+							<label id="locationErrorDetails" class="errorMessage"></label>
+						</center>
+					</article>
+					<br></br>
+					<button id="save">Create Work Order</button>
+					</form>
+			</fieldset>
+		    
+		</section>
+		</center>
+	</body>
+	<head>
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+		<meta content="utf-8" http-equiv="encoding">
+		<meta charset="utf-8"/>
+		<script src="ProjectScripts.js"></script>
+		<script src="geolocation.js"></script>
+		<script src="dataHandler.js"></script>
+		<script src="errorChecks.js"></script>
+		<script src="jquery-1.10.2.min.js"></script>
+		<script src="jquery-ui-1.10.3.custom.min.js"></script>
+		<script src="jquery.mask.min.js"></script>
+		<script>
+			setUpDocumentWhenReady();
+			document.getElementById('save').onclick = saveButtonClicked;
+		</script>
+	</head>
+</html>
